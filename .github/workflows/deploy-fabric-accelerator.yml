@@ -76,12 +76,11 @@ jobs:
             fab config set encryption_fallback_enabled true
             fab auth login -u ${{ secrets.ACTION_SPN_CLIENTID }} -p ${{ secrets.ACTION_SPN_SECRET }} --tenant ${{ secrets.TENANT_ID }} 
 
-       # Create Fabric Capacity if it doesn't exist
-        - name: Create Fabric Capacity if it doesn't exist
+        # Skip capacity creation - capacity already exists
+        - name: Verify Fabric Capacity exists
           run: |
-            fab exists .capacities/$FABRIC_CAPACITY_NAME.Capacity | grep -q true || fab create .capacities/$FABRIC_CAPACITY_NAME.Capacity -P location=$FABRIC_CAPACITY_LOCATION,sku=$FABRIC_CAPACITY_SKU,resourceGroup=$RESOURCE_GROUP,subscriptionId=${{ secrets.SUBSCRIPTION_ID }},admin=$FABRIC_CAPACITY_ADMIN_ID
-            # fab ls .capacities/$FABRIC_CAPACITY_NAME.Capacity -q state | tr -d '\r' | grep -q "Inactive" || fab start .capacities/$FABRIC_CAPACITY_NAME.Capacity -f
-
+            echo "Using existing Fabric capacity: $FABRIC_CAPACITY_NAME"
+            echo "Capacity creation skipped - using pre-existing capacity"
        # Create Workspace if it does not exist
         - name: Create Workspace if it does not exist
           run: |
